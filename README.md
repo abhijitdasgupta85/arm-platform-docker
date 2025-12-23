@@ -1,5 +1,5 @@
 # ARM Bare-Metal Platform – Docker Build & Run Environment
-============================================================
+======================================
 **Overview**
 -----------------------------
 This repository provides a Docker-based build and execution environment for an ARM Cortex-A bare-metal project, specifically:
