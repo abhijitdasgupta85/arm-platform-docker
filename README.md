@@ -109,11 +109,10 @@ This project uses a **multi-stage Docker build**.
       - Clones `arm-baremetal-qemu-lab`
       - Executes `make`
       - Produces `kernel.elf`
-
    ### Stage 2 – Runtime
-   - Installs QEMU and Python
-   - Copies only required executables and scripts
-   - Keeps the image clean and minimal
+      - Installs QEMU and Python
+      - Copies only required executables and scripts
+      - Keeps the image clean and minimal
 
 This mirrors **professional BSP / SDK build pipelines**.
 
@@ -123,11 +122,10 @@ From the root of this repository:
    ```bash
    docker build -t arm-baremetal-qemu .
    ```
-
    This step:
-   - Clones the application repository
-   - Builds the ARM bare-metal executable
-   - Packages the result into the image
+      - Clones the application repository
+      - Builds the ARM bare-metal executable
+      - Packages the result into the image
 
 ### Step 3:  Run the Container
 -------------------------------------------
@@ -144,24 +142,23 @@ From the root of this repository:
       cd /opt/arm-platform/app
       ./scripts/run_qemu.sh
       ```
-   You should see UART output from QEMU in the terminal.
-
-   <img width="775" height="113" alt="image" src="https://github.com/user-attachments/assets/8dd6ec7c-4d17-49c1-b31c-6eef8ad21fbd" />
+   UART output from QEMU in the terminal.
+      <img width="775" height="113" alt="image" src="https://github.com/user-attachments/assets/8dd6ec7c-4d17-49c1-b31c-6eef8ad21fbd" />
 
  3. Running the Python UART Simulator
-    - To run the python script you need to get into the running docker shell. To get into the specific docker contianer shell use the docket ID
-    - To view the docker id, run the below command in a split window of a vs code
-           docker ps
-      This will display as below:
-         CONTAINER ID   IMAGE                COMMAND       CREATED         STATUS         PORTS     NAMES
-         ec0f56c056b6   arm-baremetal-qemu   "/bin/bash"   6 minutes ago   Up 6 minutes             upbeat_wiles
-    - To get into the specific docker contianer shell run the below command using the docker id from above:
-         docker exec -it ec0f56c056b6 /bin/bash
-    - Once entered, run the below command to execute the python script
-         python tools/uart_sim.py   
+       - To run the python script you need to get into the running docker shell. To get into the specific docker contianer shell use the docket ID
+       - To view the docker id, run the below command in a split window of a vs code
+              docker ps
+         This will display as below:
+            CONTAINER ID   IMAGE                COMMAND       CREATED         STATUS         PORTS     NAMES
+            ec0f56c056b6   arm-baremetal-qemu   "/bin/bash"   6 minutes ago   Up 6 minutes             upbeat_wiles
+       - To get into the specific docker contianer shell run the below command using the docker id from above:
+            docker exec -it ec0f56c056b6 /bin/bash
+       - Once entered, run the below command to execute the python script
+            python tools/uart_sim.py   
 
-   You should see similar output:
-   <img width="492" height="190" alt="image" src="https://github.com/user-attachments/assets/67a9965d-3784-42d7-b71c-8d24df18c98b" />
+   Output:
+      <img width="492" height="190" alt="image" src="https://github.com/user-attachments/assets/67a9965d-3784-42d7-b71c-8d24df18c98b" />
 
    This script:
    - Sends characters to the QEMU UART
@@ -169,83 +166,52 @@ From the root of this repository:
    - Displays the UART traffic on the console
 
 ## Export Built Executables (Optional)
-
-To copy the built ELF file to the host:
-
-```bash
-docker run --rm \
-  -v $(pwd)/out:/out \
-  arm-baremetal-qemu \
-  cp /opt/arm-platform/app/build/kernel.elf /out/
-```
+   To copy the built ELF file to the host:
+      ```bash
+      docker run --rm \
+        -v $(pwd)/out:/out \
+        arm-baremetal-qemu \
+        cp /opt/arm-platform/app/build/kernel.elf /out/
+      ```
 
 Result on the host:
 
-```
-out/kernel.elf
-```
-
+      ```
+      out/kernel.elf
+      ```
 Useful for:
-- CI artifacts
-- Binary inspection
-- Debugging
 
+      - CI artifacts
+      - Binary inspection
+      - Debugging
 ---
-
 ## Host Requirements
 
 Only **Docker** is required on the host.
 
-- Docker Engine (Linux / macOS / Windows)
-- No ARM toolchain
-- No QEMU installation
-- No Python installation
+      - Docker Engine (Linux / macOS / Windows)
+      - No ARM toolchain
+      - No QEMU installation
+      - No Python installation
 
 Everything runs inside the container.
 
 ---
 
 ## CI/CD Usage
-
 This repository is directly usable in CI systems such as:
-- GitHub Actions
-- GitLab CI
-- Jenkins
+
+      - GitHub Actions
+      - GitLab CI
+      - Jenkins
 
 Example (GitHub Actions):
 
-```yaml
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: docker build -t arm-baremetal-qemu .
-```
-
----
-
-## Extending the Platform
-
-This repository is intentionally minimal and scalable.
-
-Possible extensions:
-- Add shared libraries repository
-- Add scheduler repository
-- Pin repository versions or commits
-- Auto-run QEMU in the container entrypoint
-- Add automated QEMU regression tests
-
----
-
-## Design Principles
-
-- **Separation of concerns**
-  - Application repo → product logic
-  - Docker repo → integration and tooling
-- **Reproducibility first**
-- **CI-friendly**
-- **Zero host dependencies**
-- **Industry-standard layout**
-
----
+   ```yaml
+   jobs:
+     build:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v4
+         - run: docker build -t arm-baremetal-qemu .
+   ```
