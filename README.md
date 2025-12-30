@@ -143,30 +143,41 @@ From the root of this repository:
       ./scripts/run_qemu.sh
       ```
    UART output from QEMU in the terminal.
-      <img width="775" height="113" alt="image" src="https://github.com/user-attachments/assets/8dd6ec7c-4d17-49c1-b31c-6eef8ad21fbd" />
 
- 3. Running the Python UART Simulator
-       - To run the python script you need to get into the running docker shell. To get into the specific docker contianer shell use the docket ID
+      <img width="1201" height="107" alt="image" src="https://github.com/user-attachments/assets/1efebbc7-1955-465e-b581-316b84790c4a" />
+
+ 4. Running the Python UART Simulator
+       - To run the python script you need to get into the running docker shell. To get into the specific docker contianer shell use the docker ID
        - To view the docker id, run the below command in a split window of a vs code
-              docker ps
-         This will display as below:
-            CONTAINER ID   IMAGE                COMMAND       CREATED         STATUS         PORTS     NAMES
-            ec0f56c056b6   arm-baremetal-qemu   "/bin/bash"   6 minutes ago   Up 6 minutes             upbeat_wiles
-       - To get into the specific docker contianer shell run the below command using the docker id from above:
-            docker exec -it ec0f56c056b6 /bin/bash
-       - Once entered, run the below command to execute the python script
-            python tools/uart_sim.py   
 
-   Output:
-      <img width="492" height="190" alt="image" src="https://github.com/user-attachments/assets/67a9965d-3784-42d7-b71c-8d24df18c98b" />
+               docker ps
+
+         This will display as below:
+         
+               CONTAINER ID   IMAGE                COMMAND       CREATED         STATUS         PORTS     NAMES
+               ec0f56c056b6   arm-baremetal-qemu   "/bin/bash"   6 minutes ago   Up 6 minutes             upbeat_wiles
+         
+       - To get into the specific docker contianer shell run the below command using the docker id from above:
+
+               docker exec -it ec0f56c056b6 /bin/bash
+         
+       - Once entered, run the below command to execute the python script
+
+               python tools/uart_sim.py   
+
+   Output
+   
+   <img width="1058" height="185" alt="image" src="https://github.com/user-attachments/assets/c63eb487-1444-4952-981f-e035b29b91e8" />
 
    This script:
-   - Sends characters to the QEMU UART
-   - Receives echoed data
-   - Displays the UART traffic on the console
+   
+      - Sends characters to the QEMU UART
+      - Receives echoed data
+      - Displays the UART traffic on the console
 
 ## Export Built Executables (Optional)
    To copy the built ELF file to the host:
+   
       ```bash
       docker run --rm \
         -v $(pwd)/out:/out \
