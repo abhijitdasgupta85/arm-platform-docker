@@ -99,73 +99,74 @@ After the Docker image is built, the container filesystem looks like:
 
 ---
 
-## Docker Build Strategy
+## How to Build, Run and Test the docker repository
 
+### Step 1: Docker Build Strategy
+-------------------------------------------
 This project uses a **multi-stage Docker build**.
+   ### Stage 1 – Builder
+      - Installs ARM bare-metal toolchain
+      - Clones `arm-baremetal-qemu-lab`
+      - Executes `make`
+      - Produces `kernel.elf`
 
-### Stage 1 – Builder
-- Installs ARM bare-metal toolchain
-- Clones `arm-baremetal-qemu-lab`
-- Executes `make`
-- Produces `kernel.elf`
-
-### Stage 2 – Runtime
-- Installs QEMU and Python
-- Copies only required executables and scripts
-- Keeps the image clean and minimal
+   ### Stage 2 – Runtime
+   - Installs QEMU and Python
+   - Copies only required executables and scripts
+   - Keeps the image clean and minimal
 
 This mirrors **professional BSP / SDK build pipelines**.
 
----
-
-## Build the Docker Image
-
+### Step 2: Build the Docker Image
+-------------------------------------------
 From the root of this repository:
+   ```bash
+   docker build -t arm-baremetal-qemu .
+   ```
 
-```bash
-docker build -t arm-baremetal-qemu .
-```
+   This step:
+   - Clones the application repository
+   - Builds the ARM bare-metal executable
+   - Packages the result into the image
 
-This step:
-- Clones the application repository
-- Builds the ARM bare-metal executable
-- Packages the result into the image
+### Step 3:  Run the Container
+-------------------------------------------
+1. Once the docker image is built, Run the container with the below instruction/command
 
----
+   ```bash
+   docker run --rm -it arm-baremetal-qemu
+   ```
+2. Once the container is running you will see a linux command prompt. Navaigte as below
+   and run the run_qemu.sh as below:
+   
+   Inside the container:
+      ```bash
+      cd /opt/arm-platform/app
+      ./scripts/run_qemu.sh
+      ```
+   You should see UART output from QEMU in the terminal.
 
-## Run the Container
+   <img width="775" height="113" alt="image" src="https://github.com/user-attachments/assets/8dd6ec7c-4d17-49c1-b31c-6eef8ad21fbd" />
 
-```bash
-docker run --rm -it arm-baremetal-qemu
-```
+ 3. Running the Python UART Simulator
+    - To run the python script you need to get into the running docker shell. To get into the specific docker contianer shell use the docket ID
+    - To view the docker id, run the below command in a split window of a vs code
+           docker ps
+      This will display as below:
+         CONTAINER ID   IMAGE                COMMAND       CREATED         STATUS         PORTS     NAMES
+         ec0f56c056b6   arm-baremetal-qemu   "/bin/bash"   6 minutes ago   Up 6 minutes             upbeat_wiles
+    - To get into the specific docker contianer shell run the below command using the docker id from above:
+         docker exec -it ec0f56c056b6 /bin/bash
+    - Once entered, run the below command to execute the python script
+         python tools/uart_sim.py   
 
-Inside the container:
+   You should see similar output:
+   <img width="492" height="190" alt="image" src="https://github.com/user-attachments/assets/67a9965d-3784-42d7-b71c-8d24df18c98b" />
 
-```bash
-cd /opt/arm-platform/app
-./scripts/run_qemu.sh
-```
-
-You should see UART output from QEMU in the terminal.
-
----
-
-## Running the Python UART Simulator
-
-The Python UART simulator is included from the application repository.
-
-Run it inside the container using:
-
-```bash
-python3 tools/uart_sim.py
-```
-
-This script:
-- Sends characters to the QEMU UART
-- Receives echoed data
-- Displays the UART traffic on the console
-
----
+   This script:
+   - Sends characters to the QEMU UART
+   - Receives echoed data
+   - Displays the UART traffic on the console
 
 ## Export Built Executables (Optional)
 
